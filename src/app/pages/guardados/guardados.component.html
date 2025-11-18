@@ -1,0 +1,41 @@
+<div class="guardados-page">
+  <div class="guardados-container">
+    <h1 class="page-title">Libros Favoritos</h1>
+
+    <app-category-filter
+      [categories]="categories"
+      [selectedCategory]="selectedCategory"
+      (categoryChange)="onCategoryChange($event)">
+    </app-category-filter>
+
+    <div *ngIf="loading" class="loading">
+      <p>Cargando favoritos...</p>
+    </div>
+
+    <div *ngIf="!loading && !authService.isAuthenticated()" class="not-authenticated">
+      <p>Debes iniciar sesión para ver tus libros favoritos.</p>
+    </div>
+
+    <div *ngIf="!loading && authService.isAuthenticated() && filteredFavorites.length > 0" class="books-grid">
+      <app-book-card 
+        *ngFor="let book of filteredFavorites" 
+        [book]="book"
+        (cardClick)="onBookClick($event)">
+      </app-book-card>
+    </div>
+
+    <div *ngIf="!loading && authService.isAuthenticated() && filteredFavorites.length === 0 && favorites.length === 0" class="no-results">
+      <p>No tienes libros favoritos aún.</p>
+    </div>
+
+    <div *ngIf="!loading && authService.isAuthenticated() && filteredFavorites.length === 0 && favorites.length > 0" class="no-results">
+      <p>No hay libros en la categoría seleccionada.</p>
+    </div>
+  </div>
+
+  <app-book-detail-panel
+    [book]="selectedBook"
+    [isOpen]="isPanelOpen"
+    (close)="onPanelClose()">
+  </app-book-detail-panel>
+</div>
