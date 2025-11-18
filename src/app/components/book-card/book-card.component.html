@@ -1,0 +1,30 @@
+<div class="book-card" *ngIf="book" (click)="onCardClick()">
+  <div class="book-cover">
+    <img 
+      [src]="book.thumbnail || defaultImage" 
+      [alt]="book.title"
+      (error)="onImageError($event)"
+    />
+  </div>
+  
+  <div class="book-metadata">
+    <h3 class="book-title">{{ book.title }}</h3>
+    <p class="book-author">{{ getAuthors() }}</p>
+    <div class="book-footer">
+      <span class="book-year">{{ getYear() || '—' }}</span>
+      <div class="book-rating" *ngIf="getRating() > 0">
+        <div class="stars">
+          <span 
+            *ngFor="let star of getStars(); let i = index" 
+            class="star"
+            [class.filled]="star === 1">
+            ★
+          </span>
+        </div>
+        <span class="rating-number">{{ getRating().toFixed(1) }}</span>
+      </div>
+      <span *ngIf="getRating() === 0" class="no-rating">—</span>
+    </div>
+  </div>
+</div>
+

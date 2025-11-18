@@ -1,0 +1,91 @@
+<div 
+  class="panel-backdrop" 
+  [class.open]="isOpen"
+  (click)="onBackdropClick($event)">
+  <div class="panel-container" [class.open]="isOpen">
+    <button class="close-button" (click)="onClose()">×</button>
+    
+    <div class="panel-content" *ngIf="book">
+      <div class="book-header">
+        <div class="book-cover-small">
+          <img 
+            [src]="book.thumbnail || defaultImage" 
+            [alt]="book.title"
+            (error)="onImageError($event)"
+          />
+        </div>
+        
+        <div class="book-header-info">
+          <h1 class="book-title-main">{{ book.title }}</h1>
+          <p class="book-author-main">{{ getAuthors() }}</p>
+          <p class="book-narrator" *ngIf="book.narrator">
+            Narrated by {{ book.narrator }}
+          </p>
+        </div>
+      </div>
+
+      <div class="book-actions">
+        <button class="action-btn primary" (click)="onRequestLoan()">
+          Pedir Préstamo
+        </button>
+        <button class="action-btn secondary" (click)="onAddToFavorites()" [class.active]="isFavorite">
+          <span>{{ isFavorite ? '★' : '☆' }}</span>
+          {{ isFavorite ? 'En Favoritos' : 'Añadir a Favoritos' }}
+        </button>
+      </div>
+
+      <div class="book-details-grid">
+        <div class="detail-item" *ngIf="getRating() > 0">
+          <span class="detail-label">Rating</span>
+          <div class="detail-value">
+            <div class="stars">
+              <span 
+                *ngFor="let star of getStars(); let i = index" 
+                class="star"
+                [class.filled]="star === 1">
+                ★
+              </span>
+            </div>
+            <span class="rating-text">{{ getRating().toFixed(1) }} ({{ getRatingCount() }})</span>
+          </div>
+        </div>
+
+        <div class="detail-item" *ngIf="book.duration">
+          <span class="detail-label">Duración</span>
+          <span class="detail-value">{{ book.duration }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="book.format">
+          <span class="detail-label">Formato</span>
+          <span class="detail-value">{{ book.format }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="book.publisher">
+          <span class="detail-label">Publisher</span>
+          <span class="detail-value">{{ book.publisher }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="book.publishedDate">
+          <span class="detail-label">Released</span>
+          <span class="detail-value">{{ book.publishedDate }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="book.pageCount > 0">
+          <span class="detail-label">Páginas</span>
+          <span class="detail-value">{{ book.pageCount }}</span>
+        </div>
+      </div>
+
+      <div class="book-description">
+        <h3 class="description-title">Descripción</h3>
+        <p class="description-text">{{ book.description || 'Sin descripción disponible.' }}</p>
+      </div>
+
+      <div class="book-reviews" *ngIf="getRatingCount() > 0">
+        <h3 class="reviews-title">Reseñas</h3>
+        <p class="reviews-placeholder">Reseñas disponibles próximamente</p>
+      </div>
+    </div>
+  </div>
+</div>
+
