@@ -1,0 +1,26 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <a routerLink="/home" class="navbar-logo">
+      <span class="logo-text">Biblioteca Digital</span>
+    </a>
+    
+    <button class="hamburger-menu" (click)="toggleMenu()" [class.active]="isMenuOpen" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <ul class="navbar-menu" [class.open]="isMenuOpen">
+      <li *ngFor="let item of navItems">
+        <a 
+          [routerLink]="item.path" 
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="closeMenu()">
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
