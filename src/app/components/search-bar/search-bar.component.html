@@ -1,0 +1,16 @@
+<div class="search-bar-container">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (keypress)="onKeyPress($event)"
+      placeholder="Buscar libros..."
+      class="search-input"
+    />
+    <button (click)="onSearch()" class="search-button">
+      Buscar
+    </button>
+  </div>
+</div>
+
