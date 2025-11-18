@@ -1,0 +1,363 @@
+<div class="perfil-page">
+  <!-- Formulario de Login -->
+  <div class="perfil-container" *ngIf="!currentUser">
+    <div class="login-card">
+      <h2 class="login-title">Iniciar Sesión</h2>
+      <form (ngSubmit)="onLogin()" class="login-form">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" [(ngModel)]="loginForm.username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" [(ngModel)]="loginForm.password" name="password" required>
+        </div>
+        <div class="error-message" *ngIf="loginError">{{ loginError }}</div>
+        <button type="submit" class="btn-primary" [disabled]="isLoading">
+          {{ isLoading ? 'Iniciando...' : 'Iniciar Sesión' }}
+        </button>
+      </form>
+      <div class="login-hint">
+        <p>Usuarios de prueba:</p>
+        <p>admin / admin123</p>
+        <p>user / user123</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Perfil del Usuario -->
+  <div class="perfil-container" *ngIf="currentUser">
+    <!-- Columna Izquierda -->
+    <div class="perfil-left">
+      <!-- Avatar -->
+      <div class="avatar-section">
+        <div class="avatar-container">
+          <div class="avatar" [class.has-image]="user.avatar">
+            <img *ngIf="user.avatar" [src]="user.avatar" [alt]="user.fullName">
+            <span *ngIf="!user.avatar" class="avatar-initials">{{ getInitials() }}</span>
+          </div>
+          <div class="avatar-actions">
+            <label class="btn-small" for="avatar-input">Cambiar</label>
+            <input type="file" id="avatar-input" accept="image/*" (change)="changeAvatar($event)" style="display: none;">
+            <button class="btn-small" *ngIf="user.avatar" (click)="removeAvatar()">Quitar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información Principal -->
+      <div class="info-card">
+        <h2 class="user-name">{{ user.fullName }}</h2>
+        
+        <div class="info-item">
+          <span class="info-label">Correo:</span>
+          <div class="info-value-group">
+            <span class="info-value">{{ user.email }}</span>
+            <button class="icon-btn" (click)="copyToClipboard(user.email)" title="Copiar">
+              📋
+            </button>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Rol:</span>
+          <span class="badge" [class.badge-admin]="user.role === 'Administrador'" 
+                [class.badge-librarian]="user.role === 'Bibliotecario'">
+            {{ user.role }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Estado:</span>
+          <span class="badge badge-active" [class.badge-suspended]="user.accountStatus === 'Suspendida'"
+                [class.badge-fines]="user.accountStatus === 'Con multas'">
+            {{ user.accountStatus }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Registro:</span>
+          <span class="info-value">{{ user.registrationDate }}</span>
+        </div>
+      </div>
+
+      <!-- Acciones Rápidas -->
+      <div class="quick-actions">
+        <button class="action-btn" (click)="startEditing('personalData')">Editar perfil</button>
+        <button class="action-btn">Cambiar contraseña</button>
+        <button class="action-btn" (click)="setActiveTab('reservations'); expandedSections.add('activity')">Ver reservas</button>
+        <button class="action-btn" (click)="setActiveTab('loans'); expandedSections.add('activity')">Ver préstamos</button>
+        <button class="action-btn danger" (click)="onLogout()">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <!-- Columna Derecha -->
+    <div class="perfil-right">
+      <!-- Datos Personales -->
+      <div class="section-card">
+        <div class="section-header" (click)="toggleSection('personalData')">
+          <h3>Datos Personales</h3>
+          <span class="toggle-icon" [class.expanded]="isSectionExpanded('personalData')">▼</span>
+        </div>
+        <div class="section-content" *ngIf="isSectionExpanded('personalData')">
+          <div class="edit-controls" *ngIf="editingSection === 'personalData'; else viewPersonalData">
+            <form class="form-grid">
+              <div class="form-group">
+                <label>Nombre <span class="required">*</span></label>
+                <input type="text" [(ngModel)]="editData.firstName" name="firstName" required>
+                <span class="error-message" *ngIf="formErrors.firstName">{{ formErrors.firstName }}</span>
+              </div>
+              <div class="form-group">
+                <label>Apellido <span class="required">*</span></label>
+                <input type="text" [(ngModel)]="editData.lastName" name="lastName" required>
+                <span class="error-message" *ngIf="formErrors.lastName">{{ formErrors.lastName }}</span>
+              </div>
+              <div class="form-group">
+                <label>Teléfono</label>
+                <input type="tel" [(ngModel)]="editData.phone" name="phone">
+                <span class="error-message" *ngIf="formErrors.phone">{{ formErrors.phone }}</span>
+              </div>
+              <div class="form-group">
+                <label>DNI / Documento <span class="required">*</span></label>
+                <input type="text" [(ngModel)]="editData.dni" name="dni" required>
+                <span class="error-message" *ngIf="formErrors.dni">{{ formErrors.dni }}</span>
+              </div>
+              <div class="form-group">
+                <label>Fecha de nacimiento</label>
+                <input type="date" [(ngModel)]="editData.birthDate" name="birthDate">
+              </div>
+              <div class="form-group full-width">
+                <label>Dirección</label>
+                <div class="address-grid">
+                  <input type="text" [(ngModel)]="editData.address.street" name="street" placeholder="Calle">
+                  <input type="text" [(ngModel)]="editData.address.number" name="number" placeholder="Número">
+                  <input type="text" [(ngModel)]="editData.address.city" name="city" placeholder="Localidad">
+                  <input type="text" [(ngModel)]="editData.address.province" name="province" placeholder="Provincia">
+                  <input type="text" [(ngModel)]="editData.address.postalCode" name="postalCode" placeholder="Código postal">
+                </div>
+              </div>
+            </form>
+            <div class="form-actions">
+              <button class="btn-primary" (click)="saveChanges('personalData')">Guardar</button>
+              <button class="btn-secondary" (click)="cancelEditing()">Cancelar</button>
+            </div>
+          </div>
+          <ng-template #viewPersonalData>
+            <div class="data-view">
+              <p><strong>Nombre:</strong> {{ user.personalData.firstName }} {{ user.personalData.lastName }}</p>
+              <p><strong>Teléfono:</strong> {{ user.personalData.phone || '—' }}</p>
+              <p><strong>DNI:</strong> {{ user.personalData.dni }}</p>
+              <p><strong>Fecha de nacimiento:</strong> {{ user.personalData.birthDate || '—' }}</p>
+              <p><strong>Dirección:</strong> {{ user.personalData.address.street }} {{ user.personalData.address.number }}, 
+                 {{ user.personalData.address.city }}, {{ user.personalData.address.province }} {{ user.personalData.address.postalCode }}</p>
+              <button class="btn-secondary" (click)="startEditing('personalData')" style="margin-top: 15px;">Editar</button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Preferencias -->
+      <div class="section-card">
+        <div class="section-header" (click)="toggleSection('preferences')">
+          <h3>Preferencias</h3>
+          <span class="toggle-icon" [class.expanded]="isSectionExpanded('preferences')">▼</span>
+        </div>
+        <div class="section-content" *ngIf="isSectionExpanded('preferences')">
+          <div class="edit-controls" *ngIf="editingSection === 'preferences'; else viewPreferences">
+            <div class="preferences-group">
+              <h4>Notificaciones</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.notifications.email" name="notifEmail">
+                Notificaciones por correo
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.notifications.loanExpiration" name="notifLoan">
+                Avisos de vencimiento de préstamo
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.notifications.reservationAvailable" name="notifReservation">
+                Avisos de disponibilidad de reservas
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.notifications.fines" name="notifFines">
+                Alertas de multas
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.notifications.weeklySummary" name="notifSummary">
+                Resumen semanal/mensual
+              </label>
+            </div>
+            <div class="preferences-group">
+              <h4>Interfaz</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.interface.darkMode" name="darkMode">
+                Modo oscuro
+              </label>
+              <label class="select-label">
+                Tamaño del texto:
+                <select [(ngModel)]="editData.interface.textSize" name="textSize">
+                  <option value="small">Pequeño</option>
+                  <option value="medium">Mediano</option>
+                  <option value="large">Grande</option>
+                </select>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.interface.compactView" name="compactView">
+                Vista compacta
+              </label>
+            </div>
+            <div class="preferences-group">
+              <h4>Accesibilidad</h4>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.accessibility.highContrast" name="highContrast">
+                Alto contraste
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.accessibility.reducedAnimations" name="reducedAnimations">
+                Animaciones reducidas
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="editData.accessibility.underlineLinks" name="underlineLinks">
+                Subrayado de enlaces
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="btn-primary" (click)="saveChanges('preferences')">Guardar</button>
+              <button class="btn-secondary" (click)="cancelEditing()">Cancelar</button>
+            </div>
+          </div>
+          <ng-template #viewPreferences>
+            <div class="data-view">
+              <p><strong>Notificaciones:</strong> {{ user.preferences.notifications.email ? 'Activadas' : 'Desactivadas' }}</p>
+              <p><strong>Modo oscuro:</strong> {{ user.preferences.interface.darkMode ? 'Sí' : 'No' }}</p>
+              <p><strong>Tamaño texto:</strong> {{ user.preferences.interface.textSize }}</p>
+              <button class="btn-secondary" (click)="startEditing('preferences')" style="margin-top: 15px;">Editar</button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Actividad -->
+      <div class="section-card">
+        <div class="section-header" (click)="toggleSection('activity')">
+          <h3>Actividad</h3>
+          <span class="toggle-icon" [class.expanded]="isSectionExpanded('activity')">▼</span>
+        </div>
+        <div class="section-content" *ngIf="isSectionExpanded('activity')">
+          <div class="activity-tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'loans'" (click)="setActiveTab('loans')">Préstamos</button>
+            <button class="tab-btn" [class.active]="activeTab === 'reservations'" (click)="setActiveTab('reservations')">Reservas</button>
+            <button class="tab-btn" [class.active]="activeTab === 'favorites'" (click)="setActiveTab('favorites')">Favoritos</button>
+          </div>
+          <div class="activity-content">
+            <div *ngIf="activeTab === 'loans'">
+              <div *ngIf="loans.length === 0" class="empty-state">
+                <p>No hay préstamos registrados</p>
+              </div>
+              <div *ngIf="loans.length > 0" class="loans-table">
+                <div class="table-header">
+                  <div class="table-cell">Título</div>
+                  <div class="table-cell">Autor</div>
+                  <div class="table-cell">Fecha retiro</div>
+                  <div class="table-cell">Fecha devolución</div>
+                  <div class="table-cell">Estado</div>
+                </div>
+                <div class="table-row" *ngFor="let loan of loans">
+                  <div class="table-cell">{{ loan.bookTitle }}</div>
+                  <div class="table-cell">{{ loan.bookAuthor }}</div>
+                  <div class="table-cell">{{ loan.loanDate | date:'short' }}</div>
+                  <div class="table-cell">{{ loan.returnDate | date:'short' }}</div>
+                  <div class="table-cell">
+                    <span class="status-badge" [class.status-active]="loan.status === 'active'"
+                          [class.status-overdue]="loan.status === 'overdue'"
+                          [class.status-returned]="loan.status === 'returned'">
+                      {{ loan.status === 'active' ? 'En curso' : loan.status === 'overdue' ? 'Vencido' : 'Devuelto' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="activeTab === 'reservations'">
+              <div *ngIf="reservations.length === 0" class="empty-state">
+                <p>No hay reservas activas</p>
+              </div>
+              <div *ngIf="reservations.length > 0" class="reservations-list">
+                <div class="reservation-item" *ngFor="let reservation of reservations">
+                  <div class="reservation-info">
+                    <h4>{{ reservation.bookTitle }}</h4>
+                    <p>{{ reservation.bookAuthor }}</p>
+                    <p class="reservation-position">Posición en la fila: {{ reservation.position }}</p>
+                    <p class="reservation-date">Reservado: {{ reservation.reservationDate | date:'short' }}</p>
+                  </div>
+                  <div class="reservation-status">
+                    <span class="status-badge" [class.status-pending]="reservation.status === 'pending'"
+                          [class.status-ready]="reservation.status === 'ready'"
+                          [class.status-expired]="reservation.status === 'expired'">
+                      {{ reservation.status === 'pending' ? 'Pendiente' : reservation.status === 'ready' ? 'Listo' : 'Vencido' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="activeTab === 'favorites'">
+              <div *ngIf="favorites.length === 0" class="empty-state">
+                <p>No hay libros favoritos</p>
+              </div>
+              <div *ngIf="favorites.length > 0" class="favorites-grid">
+                <div class="favorite-item" *ngFor="let book of favorites">
+                  <h4>{{ book.title }}</h4>
+                  <p>{{ book.authors?.join(', ') }}</p>
+                  <button class="btn-small" (click)="removeFavorite(book.id)">Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="section-card">
+        <div class="section-header" (click)="toggleSection('statistics')">
+          <h3>Estadísticas</h3>
+          <span class="toggle-icon" [class.expanded]="isSectionExpanded('statistics')">▼</span>
+        </div>
+        <div class="section-content" *ngIf="isSectionExpanded('statistics')">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-value">{{ user.statistics.totalBooksRead }}</span>
+              <span class="stat-label">Libros leídos</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ user.statistics.favoriteCategory }}</span>
+              <span class="stat-label">Categoría favorita</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ user.statistics.readingSpeed }}</span>
+              <span class="stat-label">Velocidad lectura</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ user.statistics.loansPerMonth }}</span>
+              <span class="stat-label">Préstamos/mes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seguridad -->
+      <div class="section-card">
+        <div class="section-header" (click)="toggleSection('security')">
+          <h3>Seguridad</h3>
+          <span class="toggle-icon" [class.expanded]="isSectionExpanded('security')">▼</span>
+        </div>
+        <div class="section-content" *ngIf="isSectionExpanded('security')">
+          <div class="data-view">
+            <p><strong>Último inicio:</strong> {{ user.security.lastLogin }}</p>
+            <div class="security-actions">
+              <button class="btn-secondary">Cambiar contraseña</button>
+              <button class="btn-secondary">Cerrar sesión en todos los dispositivos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
