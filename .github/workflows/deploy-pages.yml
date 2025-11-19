@@ -32,7 +32,7 @@ jobs:
       run: npm ci
     
     - name: Build
-      run: npm run build -- --base-href=/biblioteca-digital/
+      run: npm run build -- --configuration production --base-href=/biblioteca-digital/
     
     - name: Setup Pages
       uses: actions/configure-pages@v4
