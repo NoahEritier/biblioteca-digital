@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npx http-server dist/biblioteca-digital -p $PORT -C",
+    "start": "npx http-server dist/biblioteca-digital -p $PORT -C -o index.html",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
