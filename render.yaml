@@ -4,7 +4,7 @@ services:
     name: biblioteca-digital
     runtime: node
     plan: free
-    buildCommand: "npm install && npm run build"
+    buildCommand: "npm install && npx ng build"
     startCommand: "npx http-server dist/biblioteca-digital -p $PORT -C"
     healthCheckPath: /
     autoDeploy: true
