@@ -1,0 +1,98 @@
+/* Estilo Hand-Drawn Digital - Biblioteca Digital */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Georgia&family=Merriweather:wght@300;400;700&family=Libre+Baskerville:wght@400;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-beige: #F5F1E8;
+  --color-beige-dark: #E8E3D6;
+  --color-charcoal: #222222;
+  --color-text-light: #666666;
+  --color-orange: #FF7B2C;
+  --color-yellow: #FDE96A;
+}
+
+body {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  background: var(--color-beige);
+  color: var(--color-charcoal);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-beige);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-charcoal);
+  border: 0.5px solid var(--color-beige);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-light);
+}
+
+/* Títulos */
+h1, h2, h3 {
+  color: var(--color-charcoal);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Enlaces */
+a {
+  color: var(--color-charcoal);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 14px;
+  color: var(--color-charcoal);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.loading::after {
+  content: '...';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}
+
+/* Error */
+.error {
+  background: var(--color-beige-dark);
+  border: 0.5px solid var(--color-charcoal);
+  padding: 20px;
+  margin: 20px 0;
+  color: var(--color-charcoal);
+  box-shadow: none;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+

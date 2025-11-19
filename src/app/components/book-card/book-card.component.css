@@ -1,0 +1,126 @@
+.book-card {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0;
+  height: 100%;
+}
+
+.book-card:hover {
+  transform: translateY(-2px);
+}
+
+.book-cover {
+  width: 100%;
+  height: 0;
+  padding-bottom: 150%; /* 2:3 aspect ratio (3/2 * 100) */
+  border: 0.5px solid var(--color-charcoal);
+  background: var(--color-beige);
+  overflow: hidden;
+  margin-bottom: 12px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.book-cover img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.book-metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 4px;
+  flex: 1;
+  min-height: 70px;
+}
+
+.book-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-charcoal);
+  margin: 0;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0;
+  min-height: 17px;
+  flex-shrink: 0;
+}
+
+.book-author {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--color-text-light);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 15px;
+  flex-shrink: 0;
+}
+
+.book-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  min-height: 16px;
+  flex-shrink: 0;
+}
+
+.book-year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--color-text-light);
+  min-width: 40px;
+}
+
+.no-rating {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--color-text-light);
+  opacity: 0.5;
+}
+
+.book-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 10px;
+  color: transparent;
+  -webkit-text-stroke: 0.5px var(--color-charcoal);
+  line-height: 1;
+}
+
+.star.filled {
+  color: var(--color-charcoal);
+  -webkit-text-stroke: 0;
+}
+
+.rating-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--color-charcoal);
+}
+

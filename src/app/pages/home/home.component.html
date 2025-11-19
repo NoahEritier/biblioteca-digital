@@ -1,0 +1,122 @@
+<div class="home-page">
+  <!-- Controles de lectura -->
+  <div class="reading-controls">
+    <div class="controls-group">
+      <label>Modo de lectura:</label>
+      <div class="mode-buttons">
+        <button 
+          [class.active]="readingMode === 'single'" 
+          (click)="setReadingMode('single')"
+          title="Página única">
+          📄
+        </button>
+        <button 
+          [class.active]="readingMode === 'double'" 
+          (click)="setReadingMode('double')"
+          title="Página doble">
+          📖
+        </button>
+        <button 
+          [class.active]="readingMode === 'continuous'" 
+          (click)="setReadingMode('continuous')"
+          title="Lectura continua">
+          📝
+        </button>
+      </div>
+    </div>
+
+    <div class="controls-group">
+      <label>Ajustes rápidos:</label>
+      <div class="quick-settings">
+        <button (click)="decreaseFontSize()" title="Reducir tamaño">A-</button>
+        <span class="font-size-display">{{ fontSize }}px</span>
+        <button (click)="increaseFontSize()" title="Aumentar tamaño">A+</button>
+        
+        <select [(ngModel)]="fontFamily" (change)="setFontFamily(fontFamily)" title="Familia de fuente">
+          <option value="Georgia">Georgia</option>
+          <option value="Merriweather">Merriweather</option>
+          <option value="Libre Baskerville">Libre Baskerville</option>
+        </select>
+
+        <button (click)="toggleTextAlign()" title="Alinear texto">
+          {{ textAlign === 'left' ? '⬅️' : '⬌' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Área central de lectura -->
+  <div class="reading-container" [class.single-mode]="readingMode === 'single'" 
+       [class.double-mode]="readingMode === 'double'" 
+       [class.continuous-mode]="readingMode === 'continuous'">
+    
+    <!-- Modo página única -->
+    <div *ngIf="readingMode === 'single'" class="reading-area single-page" 
+         #readingArea
+         [style.font-size.px]="fontSize"
+         [style.font-family]="fontFamily"
+         [style.line-height]="lineHeight"
+         [style.text-align]="textAlign">
+      <div class="page-content" [innerHTML]="bookContent"></div>
+    </div>
+
+    <!-- Modo página doble -->
+    <div *ngIf="readingMode === 'double'" class="reading-area double-page">
+      <div class="page-navigation">
+        <button (click)="previousPage()" [disabled]="currentPage === 1">←</button>
+        <span>{{ currentPage }} / {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">→</button>
+      </div>
+      <div class="pages-container">
+        <div class="page left-page" 
+             [style.font-size.px]="fontSize"
+             [style.font-family]="fontFamily"
+             [style.line-height]="lineHeight"
+             [style.text-align]="textAlign">
+          <div class="page-content" [innerHTML]="bookContent"></div>
+        </div>
+        <div class="page right-page"
+             [style.font-size.px]="fontSize"
+             [style.font-family]="fontFamily"
+             [style.line-height]="lineHeight"
+             [style.text-align]="textAlign">
+          <div class="page-content" [innerHTML]="bookContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modo lectura continua -->
+    <div *ngIf="readingMode === 'continuous'" class="reading-area continuous-page"
+         [style.font-size.px]="fontSize"
+         [style.font-family]="fontFamily"
+         [style.line-height]="lineHeight"
+         [style.text-align]="textAlign">
+      <div class="page-content" [innerHTML]="bookContent"></div>
+    </div>
+  </div>
+
+  <!-- Menú contextual de selección -->
+  <div *ngIf="showContextMenu" 
+       class="context-menu" 
+       #contextMenu
+       [style.left.px]="contextMenuX"
+       [style.top.px]="contextMenuY">
+    <button (click)="copyText()" class="context-btn">
+      📋 Copiar
+    </button>
+    <div class="highlight-options">
+      <span>Resaltar:</span>
+      <button (click)="highlightText('yellow')" class="highlight-btn yellow" title="Amarillo">🟨</button>
+      <button (click)="highlightText('green')" class="highlight-btn green" title="Verde">🟩</button>
+      <button (click)="highlightText('blue')" class="highlight-btn blue" title="Azul">🟦</button>
+      <button (click)="highlightText('pink')" class="highlight-btn pink" title="Rosa">🩷</button>
+      <button (click)="highlightText('gray')" class="highlight-btn gray" title="Gris">⬜</button>
+    </div>
+    <button (click)="addNote()" class="context-btn">
+      📝 Añadir nota
+    </button>
+    <button (click)="saveQuote()" class="context-btn">
+      💾 Guardar cita
+    </button>
+  </div>
+</div>

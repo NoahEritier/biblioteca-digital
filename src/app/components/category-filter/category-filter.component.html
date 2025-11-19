@@ -1,0 +1,34 @@
+<div class="category-filter" *ngIf="categories.length > 0">
+  <div class="filter-label">Filtrar por categoría:</div>
+  
+  <!-- Botones para 5 o menos categorías -->
+  <div class="filter-options" *ngIf="!useCombobox">
+    <button 
+      class="filter-btn" 
+      [class.active]="selectedCategory === ''"
+      (click)="clearFilter()">
+      Todas
+    </button>
+    <button 
+      *ngFor="let category of categories" 
+      class="filter-btn"
+      [class.active]="selectedCategory === category"
+      (click)="onCategoryChange(category)">
+      {{ category }}
+    </button>
+  </div>
+
+  <!-- Combobox para más de 5 categorías -->
+  <div class="filter-select-wrapper" *ngIf="useCombobox">
+    <select 
+      class="filter-select"
+      [value]="selectedCategory"
+      (change)="onSelectChange($event)">
+      <option value="">Todas las categorías</option>
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category }}
+      </option>
+    </select>
+  </div>
+</div>
+

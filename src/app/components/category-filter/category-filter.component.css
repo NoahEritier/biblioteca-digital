@@ -1,0 +1,78 @@
+.category-filter {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: var(--color-beige-dark);
+  border: 0.5px solid var(--color-charcoal);
+}
+
+.filter-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 8px 16px;
+  background: var(--color-beige);
+  border: 0.5px solid var(--color-charcoal);
+  color: var(--color-charcoal);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: var(--color-beige-dark);
+}
+
+.filter-btn.active {
+  background: var(--color-charcoal);
+  color: var(--color-beige);
+}
+
+.filter-select-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.filter-select {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 10px 16px;
+  background: var(--color-beige);
+  border: 0.5px solid var(--color-charcoal);
+  color: var(--color-charcoal);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+  max-width: 400px;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23222' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
+}
+
+.filter-select:hover {
+  background-color: var(--color-beige-dark);
+}
+
+.filter-select:focus {
+  border-color: var(--color-charcoal);
+  background-color: white;
+}
+

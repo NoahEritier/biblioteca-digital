@@ -1,0 +1,43 @@
+<div class="catalogo-page">
+  <div class="catalogo-container">
+    <app-search-bar (searchEvent)="onSearch($event)"></app-search-bar>
+
+    <app-category-filter
+      *ngIf="categories.length > 0"
+      [categories]="categories"
+      [selectedCategory]="selectedCategory"
+      (categoryChange)="onCategoryChange($event)">
+    </app-category-filter>
+
+    <div *ngIf="loading" class="loading">
+      <p>Buscando libros...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && !error && filteredBooks.length > 0" class="books-grid">
+      <app-book-card 
+        *ngFor="let book of filteredBooks" 
+        [book]="book"
+        (cardClick)="onBookClick($event)">
+      </app-book-card>
+    </div>
+
+    <div *ngIf="!loading && !error && filteredBooks.length === 0 && books.length === 0" class="no-results">
+      <p>No se encontraron libros.</p>
+    </div>
+
+    <div *ngIf="!loading && !error && filteredBooks.length === 0 && books.length > 0" class="no-results">
+      <p>No hay libros en la categoría seleccionada.</p>
+    </div>
+  </div>
+
+  <app-book-detail-panel
+    [book]="selectedBook"
+    [isOpen]="isPanelOpen"
+    (close)="onPanelClose()">
+  </app-book-detail-panel>
+</div>
+

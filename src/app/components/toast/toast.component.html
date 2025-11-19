@@ -1,0 +1,13 @@
+<div class="toast" [class.show]="show" [class.success]="type === 'success'" 
+     [class.error]="type === 'error'" [class.warning]="type === 'warning'" 
+     [class.info]="type === 'info'">
+  <div class="toast-content">
+    <span class="toast-icon">{{ getIcon() }}</span>
+    <div class="toast-message">
+      <span *ngFor="let line of getMessageLines(); let last = last">
+        {{ line }}<br *ngIf="!last">
+      </span>
+    </div>
+  </div>
+</div>
+
